@@ -1,7 +1,6 @@
-import requests
 from flask import Flask, request, jsonify
 from llmproxy import generate
-from db.py import add_feedback
+from db import add_feedback
 
 app = Flask(__name__)
 
