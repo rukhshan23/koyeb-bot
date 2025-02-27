@@ -38,6 +38,7 @@ def main():
     
     # Send response back
     print(response_text)
+    response_text = "good job!"
 
     return jsonify({"text": response_text})
     
