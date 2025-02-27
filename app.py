@@ -1,6 +1,7 @@
 import requests
 from flask import Flask, request, jsonify
 from llmproxy import generate
+from db.py import add_feedback
 
 app = Flask(__name__)
 
@@ -38,7 +39,7 @@ def main():
     
     # Send response back
     print(response_text)
-    response_text = "good job!"
+    response_text = add_feedback()
 
     return jsonify({"text": response_text})
     
