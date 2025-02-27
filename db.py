@@ -1,7 +1,7 @@
 import boto3
 import uuid
 
-dynamodb = boto3.resource("dynamodb")
+dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
 table_name = "summaries"  # Replace with your table name
 table = dynamodb.Table(table_name)
 
