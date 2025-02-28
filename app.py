@@ -20,7 +20,9 @@ def main():
     
     # Set timezone and extract today's date 
     tz = pytz.timezone("America/New_York")
-    date = datetime.now(tz).date()
+    date = str(datetime.now(tz).date())
+
+    print(date)
     
     # Retrieve request payload
     data = request.get_json() 
@@ -38,7 +40,7 @@ def main():
     # Parse sender's message
     parsed_message = parse_feedback(message)
     if(parsed_message == False):
-        return jsonify({"text": "Incorrect format used. Please resubmit in the format provided below.\nPaper Number: paper-number\nFeedback: your-feedback"})
+        return jsonify({"text": "Incorrect submission format. Please resubmit, ensuring that the paper number is either 1, 2 or 3 and the submission format is as follows:\n\nPaper Number: paper-number\nFeedback: your-feedback"})
     else:
         print(f"Data payload from : {data}")
         print(f"Message from {sender} : {message}")

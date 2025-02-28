@@ -3,7 +3,7 @@ from boto3.dynamodb.conditions import Key, Attr
 import uuid
 
 dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
-table_name = "summaries"  # Replace with your table name
+table_name = "feedback"  # Replace with your table name
 table = dynamodb.Table(table_name)
 
 def put_entry(paper_num, sender, presenter, feedback, date):
@@ -39,17 +39,20 @@ def if_exists(paper_num, sender, presenter, feedback, date):
 def update(feedback_id, paper_num, sender, presenter, feedback, date):
     try:
         table.update_item(
-            Key={"id": feedback_id},  # Use id as primary key
-            UpdateExpression="SET paper_num=:p, sender=:s, presenter=:pr, feedback=:f, date=:d",
+            Key={"id": feedback_id},
+            UpdateExpression="SET paper_num=:p, sender=:s, presenter=:pr, feedback=:f, #d=:d",
             ExpressionAttributeValues={
                 ":p": paper_num,
                 ":s": sender,
                 ":pr": presenter,
                 ":f": feedback,
                 ":d": date
+            },
+            ExpressionAttributeNames={  # Use this to map `#d` to `date`
+                "#d": "date"
             }
         )
-        return f"Thank you. Your feedback was updated successfully."
+        return "Thank you. Your feedback was updated successfully."
     except Exception as e:
         return f"Error in update(): {e}"
         
