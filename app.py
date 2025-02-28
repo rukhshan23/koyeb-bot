@@ -36,7 +36,7 @@ def main():
         return jsonify({"status": "ignored"})
 
     # Parse sender's message
-    parsed_message = parse_feedback
+    parsed_message = parse_feedback(message)
     if(parsed_message == False):
         return jsonify({"text": "Incorrect format used. Please resubmit in the format provided below.\nPaper Number: paper-number\nFeedback: your-feedback"})
     else:
