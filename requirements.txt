@@ -14,6 +14,7 @@ jsonify==0.5
 MarkupSafe==3.0.2
 packaging==24.2
 python-dateutil==2.9.0.post0
+pytz==2025.1
 requests==2.32.3
 s3transfer==0.11.3
 six==1.17.0

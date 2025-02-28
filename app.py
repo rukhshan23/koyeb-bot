@@ -1,7 +1,10 @@
 from flask import Flask, request, jsonify
 from llmproxy import generate
-from db import add_feedback
-
+from db import put_entry
+from parse import parse_feedback
+from dicts import papers
+from datetime import datetime
+import pytz
 app = Flask(__name__)
 
 @app.route('/')
@@ -10,38 +13,48 @@ def hello_world():
 
 @app.route('/query', methods=['POST'])
 def main():
+    # Set accepting to True if accepting submissions, False otherwise
+    accepting = True
+    if (accepting == False):
+        return jsonify({"text": "Submissions portal for today's class is now closed."})
+    
+    # Set timezone and extract today's date 
+    tz = pytz.timezone("America/New_York")
+    date = datetime.now(tz).date()
+    
+    # Retrieve request payload
     data = request.get_json() 
+    sender = data.get("user_name", False)
+    message = data.get("text", False)
 
-    # Extract relevant information
-    user = data.get("user_name", "Unknown")
-    message = data.get("text", "")
-
-    print(data)
-
-    # Ignore bot messages
+    # Ignore requests from bot
     if data.get("bot") or not message:
         return jsonify({"status": "ignored"})
-
-    print(f"Message from {user} : {message}")
-
-    # Generate a response using LLMProxy
-    response = generate(
-        model='4o-mini',
-        system='answer my question and add keywords',
-        query= message,
-        temperature=0.0,
-        lastk=0,
-        session_id='GenericSession'
-    )
-
-    response_text = response['response']
     
-    # Send response back
-    print(response_text)
-    response_text = add_feedback()
+    # Ignore if user_name or text field empty
+    if(sender == False or message == False):
+        return jsonify({"status": "ignored"})
 
-    return jsonify({"text": response_text})
-    
+    # Parse sender's message
+    parsed_message = parse_feedback
+    if(parsed_message == False):
+        return jsonify({"text": "Incorrect format used. Please resubmit in the format provided below.\nPaper Number: paper-number\nFeedback: your-feedback"})
+    else:
+        print(f"Data payload from : {data}")
+        print(f"Message from {sender} : {message}")
+        paper_num = parsed_message['paper_number']
+        presenter = papers[date][paper_num][1]
+        feedback = parsed_message['feedback']
+
+        
+
+        #session_id = papers[parsed_message['paper_number']]
+        #response = generate(model='4o-mini', system='answer my question and add keywords', query= message, lastk=0, session_id=session_id)
+        #response_text = response['response']
+        response = put_entry(paper_num, sender, presenter, feedback, date)
+        return jsonify({"text": response})
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return "Not Found", 404

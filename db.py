@@ -1,21 +1,72 @@
 import boto3
+from boto3.dynamodb.conditions import Key, Attr
 import uuid
 
 dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
 table_name = "summaries"  # Replace with your table name
 table = dynamodb.Table(table_name)
 
-def add_feedback():
+def put_entry(paper_num, sender, presenter, feedback, date):
     try:
-        data = "Here is the feedback."
-        summary_id = str(uuid.uuid4()) 
+        feedback_id = if_exists(paper_num, sender, presenter, feedback, date)
+        if (feedback_id):
+            return update(feedback_id, paper_num, sender, presenter, feedback, date)
+        else:
+            return add(paper_num, sender, presenter, feedback, date)
+    except Exception as e:
+        return f"Error in put_entry(): {e}"
+
+def if_exists(paper_num, sender, presenter, feedback, date):
+    try:
+        response = table.scan(
+            FilterExpression=(
+                Attr("paper_num").eq(paper_num) & 
+                Attr("sender").eq(sender) & 
+                Attr("presenter").eq(presenter) & 
+                Attr("feedback").eq(feedback) & 
+                Attr("date").eq(date)
+            )
+        )
+        items = response.get("Items", [])
+        if items:
+            return items[0]["id"]
+        else:
+            return None
+    except Exception as e:
+        print (f"Error in if_exists(): {e}")
+        return None
+    
+def update(feedback_id, paper_num, sender, presenter, feedback, date):
+    try:
+        table.update_item(
+            Key={"id": feedback_id},  # Use id as primary key
+            UpdateExpression="SET paper_num=:p, sender=:s, presenter=:pr, feedback=:f, date=:d",
+            ExpressionAttributeValues={
+                ":p": paper_num,
+                ":s": sender,
+                ":pr": presenter,
+                ":f": feedback,
+                ":d": date
+            }
+        )
+        return f"Thank you. Your feedback was updated successfully."
+    except Exception as e:
+        return f"Error in update(): {e}"
+        
+def add(paper_num, sender, presenter, feedback, date):
+    try:
+        feedback_id = str(uuid.uuid4()) 
         table.put_item(
             Item={
-                "id": summary_id,
-                "data": data
+                "id": feedback_id,
+                "paper_num": paper_num,
+                "sender": sender,
+                "presenter": presenter,
+                "feedback": feedback,
+                "date": date
             }
         )
 
-        return f"Thanks! Feedback submitted successfully."
+        return f"Thank you. Your feedback was submitted successfully."
     except Exception as e:
-        return f"Error submitting feedback: {e}"
+        return f"Error in add(): {e}"
