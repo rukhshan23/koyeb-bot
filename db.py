@@ -8,7 +8,7 @@ table = dynamodb.Table(table_name)
 
 def put_entry(paper_num, sender, presenter, feedback, date):
     try:
-        feedback_id = if_exists(paper_num, sender, presenter, feedback, date)
+        feedback_id = if_exists(paper_num, sender, date)
         if (feedback_id):
             return update(feedback_id, paper_num, sender, presenter, feedback, date)
         else:
@@ -16,24 +16,23 @@ def put_entry(paper_num, sender, presenter, feedback, date):
     except Exception as e:
         return f"Error in put_entry(): {e}"
 
-def if_exists(paper_num, sender, presenter, feedback, date):
+def if_exists(paper_num, sender, date):
+    """Check if an entry exists based on paper_num, sender, and date."""
     try:
         response = table.scan(
             FilterExpression=(
                 Attr("paper_num").eq(paper_num) & 
                 Attr("sender").eq(sender) & 
-                Attr("presenter").eq(presenter) & 
-                Attr("feedback").eq(feedback) & 
                 Attr("date").eq(date)
             )
         )
         items = response.get("Items", [])
         if items:
-            return items[0]["id"]
+            return items[0]["id"]  # Assuming there is an "id" field
         else:
             return None
     except Exception as e:
-        print (f"Error in if_exists(): {e}")
+        print(f"Error in if_exists(): {e}")
         return None
     
 def update(feedback_id, paper_num, sender, presenter, feedback, date):
