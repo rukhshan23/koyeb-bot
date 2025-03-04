@@ -17,23 +17,22 @@ def put_entry(paper_num, sender, presenter, feedback, date):
         return f"Error in put_entry(): {e}"
 
 def if_exists(paper_num, sender, date):
-    """Check if an entry exists based on paper_num, sender, and date."""
+    """Check if an entry exists based on paper_num, sender, and date WITHOUT using a GSI."""
     try:
         response = table.scan(
             FilterExpression=(
                 Attr("paper_num").eq(paper_num) & 
                 Attr("sender").eq(sender) & 
                 Attr("date").eq(date)
-            )
+            ),
+            Limit=1  # Get only one match to reduce unnecessary scanning
         )
         items = response.get("Items", [])
-        if items:
-            return items[0]["id"]  # Assuming there is an "id" field
-        else:
-            return None
+        return items[0]["id"] if items else None  # Return first match's ID if exists
     except Exception as e:
         print(f"Error in if_exists(): {e}")
         return None
+
     
 def update(feedback_id, paper_num, sender, presenter, feedback, date):
     try:
