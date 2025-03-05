@@ -10,7 +10,7 @@ def determine_session_id(paper_num, date):
     return str(paper_num) + ":" + date
 
 def grade_feedback(feedback_text, session_id, paper_name):
-    rubric = f"""\n\nAbove, you are provided with feedback from a student in the audience on a **lecture-style presentation** of the research paper titled **'{paper_name}'**.
+    rubric = f"""\n\As stated before, above, you are provided with feedback from a student in the audience on a **lecture-style presentation** of the research paper titled **'{paper_name}'**.
         ### **Your Task**
         1. **Evaluate the student's feedback** based on the criteria below.
         2. **Assign a rating (0-5) for each category**, ensuring that your ratings are grounded in specific evidence from the feedback.
@@ -71,7 +71,7 @@ def grade_feedback(feedback_text, session_id, paper_name):
 
     """
 
-    prompt = feedback_text + rubric
+    prompt = "Below is the feedback from a student in the audience on a lecture-style research presentation:\n\nFeedback: " + feedback_text + rubric
 
     print("PROMPT:", prompt)
     grade = generate(model='gpt-4o', system='Grade fairly. Respond in JSON format.', query= prompt, lastk=0, session_id=session_id, rag_threshold = 0.2,
