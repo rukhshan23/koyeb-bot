@@ -1,10 +1,12 @@
+import sys
+sys.path.append("../")
 from flask import Flask, request, jsonify
-from llmproxy import generate
-from db import put_entry
+from db.feedback_db import put_entry
 from parse import parse_feedback
 from dicts import papers
 from datetime import datetime
 import pytz
+from agents.grader import grade_feedback
 app = Flask(__name__)
 
 @app.route('/')
@@ -48,12 +50,10 @@ def main():
         presenter = papers[date][paper_num][1]
         feedback = parsed_message['feedback']
 
-        
+        response = grade_feedback(feedback, str(paper_num)+":"+date, papers[date][paper_num][0])
 
-        #session_id = papers[parsed_message['paper_number']]
-        #response = generate(model='4o-mini', system='answer my question and add keywords', query= message, lastk=0, session_id=session_id)
-        #response_text = response['response']
-        response = put_entry(paper_num, sender, presenter, feedback, date)
+        #response = put_entry(paper_num, sender, presenter, feedback, date)
+
         return jsonify({"text": response})
 
 
