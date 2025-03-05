@@ -22,9 +22,8 @@ def main():
     
     # Set timezone and extract today's date 
     tz = pytz.timezone("America/New_York")
-    date = str(datetime.now(tz).date())
-
-    print(date)
+    #date = str(datetime.now(tz).date())
+    date = "2025-03-04"
     
     # Retrieve request payload
     data = request.get_json() 
@@ -50,11 +49,12 @@ def main():
         presenter = papers[date][paper_num][1]
         feedback = parsed_message['feedback']
 
+
         response = grade_feedback(feedback, str(paper_num)+":"+date, papers[date][paper_num][0])
 
         #response = put_entry(paper_num, sender, presenter, feedback, date)
 
-        return jsonify({"text": response})
+        return jsonify({"text": f"Your submission for the paper titled **\"{papers[date][paper_num][0]}\"** has been reviewed:\n\n"+response})
 
 
 @app.errorhandler(404)
