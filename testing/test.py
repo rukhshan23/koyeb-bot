@@ -48,7 +48,8 @@ def populate_with_feedbacks():
 
         # Print response for debugging
         print(f"Sent feedback for Paper 1: {response.status_code} - {response.text}")
+        return
 
-#populate_with_feedbacks()
+populate_with_feedbacks()
 
-populate_with_feedbacks_parallel()
+#populate_with_feedbacks_parallel()

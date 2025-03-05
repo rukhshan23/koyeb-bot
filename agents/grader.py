@@ -10,31 +10,72 @@ def determine_session_id(paper_num, date):
     return str(paper_num) + ":" + date
 
 def grade_feedback(feedback_text, session_id, paper_name):
-    rubric = f"""\n\nAbove, you are provided with student-feedback on a research paper presentation on the paper titled, '{paper_name}'. Grade the submitted feedback based on the rubric below and the research paper provided to you: 
+    rubric = f"""\n\nAbove, you are provided with feedback from a student in the audience on a **lecture-style presentation** of the research paper titled **'{paper_name}'**.
+        ### **Your Task**
+        1. **Evaluate the student's feedback** based on the criteria below.
+        2. **Assign a rating (0-5) for each category**, ensuring that your ratings are grounded in specific evidence from the feedback.
+        3. **Provide a qualitative explanation** at the end to justify your ratings.
+        4. **Output must be in JSON format** (example format given below). **Do not include markdown syntax (```json)**.
 
-    1. Clear Understanding - Does the feedback clearly and accurately describe the main idea presented?
-    
-    2. Depth - Does the feedback provide suggestions to build on the content of the presented work?
+        ---
 
-    3. Presentation Style - Does the feedback comment on the positives and/or negatives of the presenter's presentation style?
+        ### **🔹 Rating Criteria (Evaluate the Feedback, NOT the Presentation)**
+        1. **Understanding (0-5)** – Does the feedback show that the student **clearly understood the main idea of the paper**?
+        2. **Future Ideas (0-5)** – Does the feedback provide **constructive suggestions** to build upon the presented work?
+        3. **Comments on Style (0-5)** – Does the feedback include **insights on the presenter’s style** (e.g., clarity, engagement, pacing)?
+        4. **Respect & Professionalism (0-5)** – Is the feedback **polite, respectful, and constructive**, even if critical?
 
-    4. Respect & Professionalism - Is the feedback polite, respectful, and framed in a way that is encouraging?
+        **Guidance for Ratings:**
+        - **5** = Strong evidence of this criterion in the feedback.
+        - **3-4** = Some evidence, but weak or lacking in depth.
+        - **0-2** = Poor, missing, or irrelevant.
 
-    Rate each of the four aspects of the student-feedback submission out of 5, where 0 is the minimum/worse rating and 5 is the maximum/best rating. The explanation in the end should be friendly and polite. You must respond in JSON format. An example output in the exact JSON format required is provided below.
-    You must NOT add ```json ```.
-    
+        ---
+
+        Sample feedback 1: Great paper!
+        Sample output 1:
+
         {{
-            "Clear Understanding": "4",
-            "Depth": "5",
-            "Presentation Style": "4",
-            "Respect & Professionalism": "3",
-            "explanation": "overall qualitative comments for the student on their submission"
+            "Clear Understanding": "1",
+            "Future Ideas": "0",
+            "Presentation Style": "1",
+            "Respect & Professionalism": "2",
+            "explanation": "Your feedback would be even more valuable if you included specific details to demonstrate your understanding of the paper and offered suggestions for building on the work. Additionally, sharing thoughts on the presenter's style—such as clarity, engagement, or pacing—could make your feedback more constructive and helpful. Keep going—you’re on the right track!"
         }}
+
+        Sample feedback 2: The presentation was fine, and I understood most of it. The presenter spoke well, but some slides were a little text-heavy. Maybe next time, they could add more visuals. The topic was interesting, but I didn’t really see how it connects to real-world applications.
+        Sample output 2:
+
+        {{
+            "Clear Understanding": "3",
+            "Future Ideas": "2",
+            "Presentation Style": "3",
+            "Respect & Professionalism": "4",
+            "explanation": "Your feedback shows a good understanding of the presentation, and your suggestion for adding more visuals is a helpful start! To make your feedback even more impactful, consider elaborating on the key contributions of the paper and providing more depth in your suggestions. Adding more detailed comments on the presenter’s style—such as their clarity, pacing, or engagement—could also make your feedback more constructive. Keep going—you're on the right track!"
+        }}
+
+        Sample feedback 3: The presentation effectively explained the key contributions of the paper, especially the perceptions of autonomy of autistic people in the context of LLM-powered writing assistance. I liked how the presenter broke down complex concepts into simpler parts. One area for improvement could be addressing the ethical implications more thoroughly. The pacing was good, and the speaker engaged well with questions. Overall, a very strong presentation!
+        Sample output 3:
+
+        {{
+            "Clear Understanding": "5",
+            "Future Ideas": "4",
+            "Presentation Style": "5",
+            "Respect & Professionalism": "5",
+            "explanation": "Your feedback demonstrates a strong understanding of the paper’s main ideas, which is great to see! Your suggestion regarding ethical considerations adds depth and shows thoughtful engagement with the topic. The comments on presentation style are specific and constructive, making them especially useful for the presenter. Additionally, your respectful and encouraging tone enhances the impact of your feedback—well done!"
+        }}
+
+
+
+
+
     """
 
     prompt = feedback_text + rubric
-    grade = generate(model='4o-mini', system='Grade fairly. Respond in JSON format.', query= prompt, lastk=0, session_id=session_id, rag_threshold = 0.2,
-    rag_usage = True, rag_k = 10)
+
+    print("PROMPT:", prompt)
+    grade = generate(model='gpt-4o', system='Grade fairly. Respond in JSON format.', query= prompt, lastk=0, session_id=session_id, rag_threshold = 0.2,
+    rag_usage = True, rag_k = 0)
     return str(grade['response'])
     #response_text = response['response']
 

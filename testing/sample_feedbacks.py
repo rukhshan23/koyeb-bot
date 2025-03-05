@@ -1,5 +1,5 @@
 feedbacks = {
-  "0": "This paper presents TwIPS, an LLM-powered texting application aimed at simplifying conversational nuances for autistic users. The study effectively demonstrates how the tool helps users interpret tone, preview message impact, and refine phrasing. The presenter's feedback was clear and engaging, showing a solid grasp of the study’s goals. However, while the study is well-structured, incorporating feedback on potential real-world deployment challenges would enhance its depth.",
+  "0": "This is a great paper.",
 
   "2": "TwIPS introduces a much-needed intervention for autistic users struggling with text-based interactions. The authors highlight critical challenges and provide a strong evaluation framework. The presenter maintained a professional and confident demeanor, but the discussion could have benefited from more audience engagement. Further exploration of AI bias and user reliance would deepen the research’s impact.",
 
@@ -19,3 +19,5 @@ feedbacks = {
 
   "10": "TwIPS offers a compelling approach to AI-assisted communication for autistic users, demonstrating clear benefits in enhancing text-based interactions. The presenter conveyed the key ideas with clarity and professionalism, making the discussion engaging and well-structured. However, the evaluation could be expanded to explore potential limitations, such as user reliance on AI-generated suggestions and how this affects long-term communication habits. Incorporating a broader participant pool and real-world deployment data would further solidify the study’s contributions."
 }
+
+#This paper presents TwIPS, an LLM-powered texting application aimed at simplifying conversational nuances for autistic users. The study effectively demonstrates how the tool helps users interpret tone, preview message impact, and refine phrasing. The presenter's feedback was clear and engaging, showing a solid grasp of the study’s goals. However, while the study is well-structured, incorporating feedback on potential real-world deployment challenges would enhance its depth.
