@@ -75,7 +75,7 @@ def grade_feedback(feedback_text, session_id, paper_name):
 
     print("PROMPT:", prompt)
     grade = generate(model='gpt-4o', system='Grade fairly. Respond in JSON format.', query= prompt, lastk=0, session_id=session_id, rag_threshold = 0.2,
-    rag_usage = True, rag_k = 0)
+    rag_usage = True, rag_k = 5)
     return str(grade['response'])
     #response_text = response['response']
 
